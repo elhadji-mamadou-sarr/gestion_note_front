@@ -2,28 +2,28 @@
 
 <app-accueil></app-accueil>
 
-<section class="dashboard">
+<section class="dashboard" >
 
   <div class="dash-content">
         <div class="activity">
 
-          <div class="errorMessage" *ngIf="errorMessage">
+          <div class="alert alert-danger" *ngIf="errorMessage">
             <span> {{ errorMessage }}</span>
           </div>
 
-          <div class="succesMessage" *ngIf="succesMessage">
+          <div class="alert alert-success" *ngIf="succesMessage">
             <span> {{ succesMessage }} </span>
           </div>
 
-        <div class="title">
+        <div class="title justify-content-between">
 
-          <div class="head">
+          <div class="d-flex">
             <i class="uil uil-clock-three"></i>
             <span class="text">Liste des eleves</span>
           </div>
 
           <div class="button-add">
-            <a class="button_add" (click)="openAddDialog(null)">+ Ajouter</a>
+            <a class="btn btn-primary fw-bold " (click)="openAddDialog(null)">+ Ajouter</a>
           </div>
 
         </div>
@@ -31,14 +31,14 @@
         <div class="content">
 
           <table class="table" >
-            <thead>
+            <thead class="table-primary">
               <tr>
-                <th>#</th>
-                <th>Nom</th>
-                <th>Prenom</th>
-                <th>Sexe</th>
-                <th>Date de Naissance</th>
-                <th>Action</th>
+                <th scope="col">#</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Prenom</th>
+                <th scope="col">Sexe</th>
+                <th scope="col">Date de Naissance</th>
+                <th scope="col" class="text-end">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -49,9 +49,10 @@
                 <td>{{ eleve.sexe }}</td>
                 <td>{{ eleve.dateN }}</td>
                 <td>
-                  <div class="action">
-                    <button (click)="openAddDialog(eleve)">modifier</button>
-                    <button (click)="deleteEleve(eleve.id!)" >supprimer</button>
+                  <div class="d-flex float-end gap-3">
+                    <button class="btn btn-outline-info btn-sm" [routerLink]="['/bulletin/eleve', eleve.id]">Bulletin</button>
+                    <a class="btn btn-outline-primary btn-sm" (click)="openAddDialog(eleve)">modifier</a>
+                    <a class="btn btn-outline-primary btn-sm" (click)="deleteEleve(eleve.id!)" >supprimer</a>
                   </div>
                 </td>
               </tr>
@@ -75,12 +76,11 @@
 
     <form (submit)="saveEleve()" class="row g-3 needs-validation" novalidate>
 
+      <input type="hidden" name="id" [(ngModel)]="newEleve.id">
+
       <div class="col-md-6">
         <label class="form-label"  for="validationCustom03">Nom</label>
-        <input class="form-control" id="validationCustom03" type="text" name="nom" [(ngModel)]="newEleve!.nom" required>
-        <div class="invalid-feedback">
-          Le nom est obligatoire !.
-        </div>
+        <input class="form-control" id="validationCustom03" type="text" name="nom" [(ngModel)]="newEleve.nom" required>
       </div>
 
       <div class="col-md-6">
@@ -101,9 +101,9 @@
         <input class="form-select" type="date" name="dateN" [(ngModel)]="newEleve.dateN" required>
       </div>
 
-      <div class="mt-4 row g-1">
-        <button class="btn btn-primary col-md-5" type="submit">{{ newEleve ? 'Modifier' : 'Ajouter' }}</button>
-        <a class="btn btn-outline-secondary col-md-5" (click)="closeDialog()">Annuler</a>
+      <div class="mt-4 d-flex gap-3 ">
+        <button class="btn btn-primary w-50" type="submit" (click)="closeDialog()">{{ selectedEleve ? 'Modifier' : 'Ajouter' }}</button>
+        <a class="btn btn-outline-secondary w-50" (click)="closeDialog()">Annuler</a>
       </div>
 
     </form>
@@ -112,62 +112,3 @@
 
 </ng-template>
 
-
-<style>
-
-  table{
-    border: solid 1px #00000041;
-    width: 100%;
-  }
-
-  th{
-    border: solid 1px #00000041;
-  }
-  td{
-    border: solid 1px #00000041;
-  }
-
-  .content{
-    align-content: center;
-  }
-
-  td .action{
-    display: flex;gap: 15px;
-    justify-content: center;
-  }
-
-  .button_add{
-    padding: 9px;
-    border-color: white;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: bold;
-    color: white;
-    background-color: #0E4BF1;
-    cursor: pointer;
-  }
-
-  .title{
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .head{
-    display: flex;
-  }
-
-  .errorMessage span{
-    padding: 10px;
-    background-color: #ff000076;
-    width: 100px;
-    color: white;
-  }
-
-
-  .succesMessage span{
-    padding: 10px;
-    background-color: #00800070;
-    color: white;
-  }
-
-</style>

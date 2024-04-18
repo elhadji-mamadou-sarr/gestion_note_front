@@ -40,12 +40,15 @@ export class EleveService {
     return this._httpClient.get<Eleve>(url, {headers})
   }
 
-  updateEleve(id :number) : Observable<Eleve> {
+  updateEleve(eleve : Eleve) : Observable<any> {
      const headers = new HttpHeaders({
        'Content-Type': 'application/json'
      });
-     const url = `${this.url}/${id}`
-     return this._httpClient.put<Eleve>(url, {headers})
+     return this._httpClient.put<any>(this.url, eleve, {headers}).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(error);
+      })
+    )
    }
 
    deleteEleve(id : number):Observable<any>{

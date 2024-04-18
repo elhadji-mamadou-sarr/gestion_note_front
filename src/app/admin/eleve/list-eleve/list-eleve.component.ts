@@ -5,12 +5,13 @@ import { AccueilComponent } from '../../accueil/accueil.component';
 import { NgFor, NgIf } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { FormsModule, NgModel } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 
 @Component({
   selector: 'app-list-eleve',
   standalone: true,
-  imports: [NgFor, AccueilComponent, FormsModule, NgIf],
+  imports: [NgFor, AccueilComponent, FormsModule, NgIf, RouterLink],
   templateUrl: './list-eleve.component.html',
   styleUrl: './list-eleve.component.css'
 })
@@ -25,6 +26,7 @@ export class ListEleveComponent implements OnInit{
   errorMessage ="";
 
   newEleve : Eleve = {
+    id :0,
     nom: '',
     prenom: '',
     dateN: undefined,
@@ -40,12 +42,13 @@ export class ListEleveComponent implements OnInit{
 
 
   openAddDialog(eleve: Eleve | null): void {
+    if (eleve != null) {
+      this.newEleve = eleve
+    }
     this.selectedEleve = eleve;
     const dialogRef = this.dialog.open(this.addDialog);
-
     dialogRef.afterClosed().subscribe(() => {
       this.selectedEleve = null; // Réinitialiser une fois fermé
-      this.listEleve();
     });
   }
 
@@ -63,22 +66,10 @@ export class ListEleveComponent implements OnInit{
   }
 
 
-  ajouterEleve(){
-    this.eleveService.addEleve(this.newEleve).subscribe({
-      next:()=>{
-        this.succesMessage = "Eleve ajouter avec succes"
-      },
-      error:(err) =>{
-          this.errorMessage="Echec de l'ajout"
-      },
-    })
-  }
-
-
   saveEleve(): void {
-    if (this.selectedEleve) {
-      this.eleveService.updateEleve(this.selectedEleve.id!).subscribe({
-        next: () => {
+    if (this.selectedEleve != null) {
+      this.eleveService.updateEleve(this.selectedEleve).subscribe({
+        next:() => {
           this.succesMessage = 'Élève mis à jour avec succès';
           this.closeDialog();
         },
@@ -88,9 +79,20 @@ export class ListEleveComponent implements OnInit{
         }
       });
     } else {
-     this.ajouterEleve()
+      this.eleveService.addEleve(this.newEleve).subscribe({
+        next: () => {
+          this.succesMessage = 'Élève ajouté avec succès';
+          this.closeDialog();
+        },
+        error: (err) => {
+          this.errorMessage = 'Échec de l\'ajout de l\'élève';
+          console.error('Erreur :', err);
+        }
+      });
     }
   }
+
+
   closeDialog(): void {
     this.dialog.closeAll();
   }
@@ -100,7 +102,7 @@ export class ListEleveComponent implements OnInit{
     this.eleveService.deleteEleve(id).subscribe({
       next: (response) => {
         this.listEleve();
-        this.succesMessage = response.error.text;
+        this.succesMessage = "Élève supprimer avec succès";
       },
       error: (err) => {
         this.errorMessage = err.message;
@@ -108,7 +110,6 @@ export class ListEleveComponent implements OnInit{
       }
     });
   }
-
 
 
 

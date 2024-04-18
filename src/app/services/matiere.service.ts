@@ -39,12 +39,11 @@ export class MatiereService {
     return this._httpClient.get<Matiere>(url, {headers})
   }
 
-  updateMatiere(id :number) : Observable<Matiere> {
+  updateMatiere(matiere :Matiere) : Observable<Matiere> {
      const headers = new HttpHeaders({
        'Content-Type': 'application/json'
      });
-     const url = `${this.url}/${id}`
-     return this._httpClient.put<Matiere>(url, {headers})
+     return this._httpClient.put<Matiere>(this.url, matiere, {headers})
    }
 
    deleteMatiere(id : number):Observable<any>{
